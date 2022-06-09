@@ -71,6 +71,7 @@ class ProductController extends Controller
         } else {
             $products = Product::orderBy('id', 'DESC')->where('category_id', $request->category_id)->paginate(12);
         }
+
         return response()->json([
             'status' => 200,
             'data'   => view('client.includes.product-category', compact('products'))->render()

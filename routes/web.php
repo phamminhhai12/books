@@ -205,11 +205,11 @@ Route::namespace('Admin')->prefix('ad')->group(function () {
             Route::get('list','CommentController@index')->name('comment.list');
 
             Route::get('show/{id}','CommentController@show')->name('comment.show');
-            
+
             Route::get('delete/{id}','CommentController@destroy')->name('comment.delete');
         });
         // Reply
-        Route::group(['prefix'=>'reply'],function(){            
+        Route::group(['prefix'=>'reply'],function(){
             Route::get('delete/{id}','ReplyController@destroy')->name('reply.delete');
         });
     });

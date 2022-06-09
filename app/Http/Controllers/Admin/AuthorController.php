@@ -2,12 +2,21 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Contracts\Repositories\AuthorRepositoryInterface;
 use App\Http\Controllers\Controller;
+use App\Repositories\AuthorRepository;
 use Illuminate\Http\Request;
 use App\Models\Author;
 
 class AuthorController extends Controller
 {
+
+    protected $authorRepository;
+
+    public function __construct(AuthorRepository $authorRepository)
+    {
+        $this->authorRepository = $authorRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +24,7 @@ class AuthorController extends Controller
      */
     public function index()
     {
-        $authors = Author::all();
+        $authors =  $this->authorRepository->getAll();
         return view('admin.authors.list', compact('authors'));
     }
 
@@ -37,10 +46,16 @@ class AuthorController extends Controller
      */
     public function store(Request $request)
     {
-        Author::create([
-            'name' => $request->name
-        ]);
-        return redirect()->route('author.list')->with("success","Lưu thành công");
+//        Author::create([
+//            'name' => $request->name
+//        ]);
+        $result = $this->authorRepository->create($request);
+        if($result){
+            return redirect()->route('author.list')->with("success","Lưu thành công");
+        }
+        else{
+            return redirect()->route('author.list')->with("error","Lưu thất bại");
+        }
     }
 
     /**
@@ -51,8 +66,8 @@ class AuthorController extends Controller
      */
     public function edit($id)
     {
-        $author = Author::find($id);
-        return view('admin.author.edit', compact('author'));
+        $author = $this->authorRepository->find($id);
+        return view('admin.authors.edit', compact('author'));
     }
 
     /**
@@ -64,10 +79,15 @@ class AuthorController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $author = Author::find($id);
-        $author->name = $request->name;
-        $author->save();
-        return redirect()->route('author.list')->with("success","Sửa thành công");
+//        $author = Author::find($id);
+//        $author->name = $request->name;
+//        $author->save();
+        $result = $this->authorRepository->update($request, $id);
+        if($result){
+            return redirect()->route('author.list')->with("success","Sửa thành công");
+        }
+
+
     }
 
     /**
@@ -78,8 +98,9 @@ class AuthorController extends Controller
      */
     public function destroy($id)
     {
-        $author = Author::find($id);
-        $author->delete();
-        return redirect()->route('author.list')->with("success","Xóa thành công");
+        $result = $this->authorRepository->destroy($id);
+        if($result){
+            return redirect()->route('author.list')->with("success","Xóa thành công");
+        }
     }
 }

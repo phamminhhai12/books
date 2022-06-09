@@ -3,12 +3,22 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Repositories\CategoryRepository;
+use App\Repositories\ParentCategoryRepository;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\ParentCategory;
 
 class CategoryController extends Controller
 {
+    protected $categoryRepository;
+    protected $parentCategoryRepository;
+
+    public function __construct(CategoryRepository $categoryRepository, ParentCategoryRepository  $parentCategoryRepository)
+    {
+        $this->categoryRepository = $categoryRepository;
+        $this->parentCategoryRepository = $parentCategoryRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +26,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
+        $categories = $this->categoryRepository->getAll();
         return view('admin.categories.list', compact('categories'));
     }
 
@@ -27,7 +37,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $parentCategories = ParentCategory::all();
+        $parentCategories = $this->parentCategoryRepository->getAll();
         return view('admin.categories.add', compact('parentCategories'));
     }
 
@@ -43,11 +53,7 @@ class CategoryController extends Controller
             //  Let's do everything here
             if ($request->file('image')->isValid()) {
                 $request->image->storeAs('/public/images/categories', $request->image->getClientOriginalName());
-                Category::create([
-                   'name' => $request->name,
-                   'parent_category_id' => $request->parent_category_id,
-                   'url' => "storage/images/categories/". $request->image->getClientOriginalName()
-                ]);
+                $this->categoryRepository->create($request);
                 return redirect()->route('category.list')->with("success","Lưu thành công");
             }
         }
@@ -72,8 +78,8 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        $parentCategories = ParentCategory::all();
-        $category = Category::find($id);
+        $parentCategories = $this->parentCategoryRepository->getAll();
+        $category = $this->categoryRepository->find($id);
         return view('admin.categories.edit', compact('category', 'parentCategories'));
     }
 
@@ -86,17 +92,7 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $category = Category::find($id);
-        $category->name = $request->name;
-        $category->parent_category_id = $request->parent_category_id;
-        if ($request->hasFile('image')) {
-            //  Let's do everything here
-            if ($request->file('image')->isValid()) {
-                $request->image->storeAs('/public/images/categories', $request->image->getClientOriginalName());
-                $category->url = "storage/images/categories/". $request->image->getClientOriginalName();
-            }
-        }
-        $category->save();
+        $this->categoryRepository->update($request,$id);
         return redirect()->route('category.list')->with("success","Sửa thành công");
     }
 
@@ -108,8 +104,7 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        $category = Category::find($id);
-        $category->delete();
+       $this->categoryRepository->destroy($id);
         return redirect()->route('category.list')->with("success","Xóa thành công");
     }
 }

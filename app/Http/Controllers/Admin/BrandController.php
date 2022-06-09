@@ -3,11 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Repositories\BrandRepository;
 use Illuminate\Http\Request;
 use App\Models\Brand;
 
 class BrandController extends Controller
 {
+    protected $brandRepository;
+
+    public function __construct(BrandRepository $brandRepository)
+    {
+        $this->brandRepository = $brandRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +23,7 @@ class BrandController extends Controller
      */
     public function index()
     {
-        $brands = Brand::all();
+        $brands = $this->brandRepository->getAll();
         return view('admin.brands.list', compact('brands'));
     }
 
@@ -37,10 +45,14 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        Brand::create([
-            'name' => $request->name
-        ]);
-        return redirect()->route('brand.list')->with("success","Lưu thành công");
+        $result = $this->brandRepository->create($request);
+        if($result){
+            return redirect()->route('brand.list')->with("success","Lưu thành công");
+        }
+        else{
+            return redirect()->route('brand.list')->with("error","Lưu thất bại");
+        }
+
     }
 
     /**
@@ -51,7 +63,7 @@ class BrandController extends Controller
      */
     public function edit($id)
     {
-        $brand = Brand::find($id);
+        $brand = $this->brandRepository->find($id);
         return view('admin.brand.edit', compact('brand'));
     }
 
@@ -64,10 +76,12 @@ class BrandController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $brand = Brand::find($id);
-        $brand->name = $request->name;
-        $brand->save();
-        return redirect()->route('brand.list')->with("success","Sửa thành công");
+        $result = $this->brandRepository->update($request, $id);
+        if($result){
+            return redirect()->route('brand.list')->with("success","Sửa thành công");
+        }
+
+
     }
 
     /**
@@ -78,8 +92,9 @@ class BrandController extends Controller
      */
     public function destroy($id)
     {
-        $brand = Brand::find($id);
-        $brand->delete();
-        return redirect()->route('brand.list')->with("success","Xóa thành công");
+        $result = $this->authorRepository->destroy($id);
+        if($result){
+            return redirect()->route('brand.list')->with("success","Xóa thành công");
+        }
     }
 }

@@ -35,19 +35,19 @@
                 </tr>
                 <tr>
                     <th>Danh mục sản phẩm</th>
-                    <td>{{ \App\Models\Category::find($product->category_id)->name }}</td>
+                    <td>{{ $product->cate_title }}</td>
                 </tr>
                 <tr>
                     <th>Hãng sản phẩm</th>
-                    <td>{{ \App\Models\Brand::find($product->brand_id)->name }}</td>
+                    <td>{{  $product->braand_title}}</td>
                 </tr>
                 <tr>
                     <th>Tác giả</th>
-                    <td>{{ \App\Models\Author::find($product->author_id)->name }}</td>
+                    <td>{{  $product->author_title }}</td>
                 </tr>
                 <tr>
                     <th>Nhà xuất bản</th>
-                    <td>{{ \App\Models\Supplier::find($product->supplier_id)->name }}</td>
+                    <td>{{  $product->supllier_title }}</td>
                 </tr>
                 <tr>
                     <th>Số lượng</th>

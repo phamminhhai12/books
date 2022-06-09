@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Contracts\Repositories\CategoryRepositoryInterface;
 use App\Models\Category;
+use App\Models\ParentCategory;
 use Illuminate\Http\Request;
 
 class CategoryRepository implements CategoryRepositoryInterface
@@ -13,6 +14,14 @@ class CategoryRepository implements CategoryRepositoryInterface
     public function getAll()
     {
         return Category::all();
+    }
+
+    public function getAllCategory()
+    {
+        return Category:: join('parent_categories','categories.parent_category_id','parent_categories.id')
+                            -> select('categories.id as id','categories.name as name','categories.url as url',
+                                'parent_categories.name as parent_category_name','parent_categories.id as parent_category_id ')
+                            ->get();
     }
 
     public function create(Request $request)

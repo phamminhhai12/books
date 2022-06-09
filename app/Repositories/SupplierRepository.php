@@ -8,29 +8,15 @@ use Illuminate\Http\Request;
 class SupplierRepository implements SupplierRepositoryInterface
 {
 
-    public function index()
+
+    public function getAll()
     {
-        // TODO: Implement index() method.
+        // TODO: Implement getAll() method.
     }
 
-    public function create()
+    public function create(Request $request)
     {
         // TODO: Implement create() method.
-    }
-
-    public function store(Request $request)
-    {
-        // TODO: Implement store() method.
-    }
-
-    public function edit($id)
-    {
-        // TODO: Implement edit() method.
-    }
-
-    public function show($id)
-    {
-        // TODO: Implement show() method.
     }
 
     public function update(Request $request, $id)
@@ -41,5 +27,10 @@ class SupplierRepository implements SupplierRepositoryInterface
     public function destroy($id)
     {
         // TODO: Implement destroy() method.
+    }
+
+    public function find($id)
+    {
+        // TODO: Implement find() method.
     }
 }

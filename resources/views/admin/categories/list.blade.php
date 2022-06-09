@@ -45,7 +45,7 @@
                         <tr>
                             <td>{{ $count }}</td>
                             <td><img src="{{ asset($category->url) }}" width=60px ></td>
-                            <td>{{ \App\Models\ParentCategory::find($category->parent_category_id)->name }}</td>
+                            <td>{{ $category->parent_category_name }}</td>
                             <td>{{ $category->name }}</td>
                             <td>
                                 <a href="{{ route('category.delete',['id' => $category->id]) }}" class="btn btn-danger btn-circle btn-sm" onclick="return confirm('Bạn muốn xóa item này ?')">

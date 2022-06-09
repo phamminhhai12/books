@@ -3,6 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Repositories\AuthorRepository;
+use App\Repositories\BrandRepository;
+use App\Repositories\CategoryRepository;
+use App\Repositories\ProductRepository;
+use App\Repositories\SupplierRepository;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Product;
@@ -14,6 +19,21 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
+    protected $productRepository;
+    protected $authorRepository;
+    protected $brandRepository;
+    protected  $categoryRepository;
+    protected $supllierRepository;
+
+    public function __construct(ProductRepository  $productRepository, AuthorRepository  $authorRepository, BrandRepository $brandRepository,CategoryRepository $categoryRepository, SupplierRepository  $supllierRepository)
+    {
+        $this->productRepository = $productRepository;
+        $this->authorRepository= $authorRepository;
+        $this->brandRepository = $brandRepository;
+        $this->supllierRepository = $supllierRepository;
+        $this->categoryRepository= $categoryRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -21,11 +41,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::join('categories', 'products.category_id', '=', 'categories.id')
-        ->join('suppliers', 'products.supplier_id', '=', 'suppliers.id')
-        ->join('authors', 'products.author_id', '=', 'authors.id')
-        ->join('brands', 'brands.id', '=', 'products.brand_id')
-        ->get(['products.*', 'categories.name AS cate_title', 'suppliers.name AS supplier_title', 'authors.name AS author_title', 'brands.name AS brand_title']);
+        $products = $this->productRepository->getAll();
         return view('admin.products.list', compact('products'));
     }
 
@@ -36,10 +52,10 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $categories = Category::all();
-        $suppliers = Supplier::all();
-        $authors = Author::all();
-        $brands = Brand::all();
+        $categories = $this->categoryRepository->getAll();
+        $suppliers = $this->supllierRepository->getAll();
+        $authors = $this->authorRepository->getAll();
+        $brands = $this->brandRepository->getAll();
         return view('admin.products.add', compact('categories', 'suppliers', 'authors', 'brands'));
     }
 
@@ -69,7 +85,7 @@ class ProductController extends Controller
                 'public_date' => $request->public_date,
                 'size' => $request->size,
                 'cover' => $request->cover,
-                'page' => $request->page 
+                'page' => $request->page
             ]);
             foreach($request->thumbnail as $image) {
                 $name = $image->getClientOriginalName();
@@ -90,11 +106,11 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        $categories = Category::all();
-        $suppliers = Supplier::all();
-        $authors = Author::all();
-        $brands = Brand::all();
-        $product = Product::find($id);
+        $categories = $this->categoryRepository->getAll();
+        $suppliers = $this->supllierRepository->getAll();
+        $authors = $this->authorRepository->getAll();
+        $brands = $this->brandRepository->getAll();
+        $product = $this->productRepository->find($id);
         return view('admin.products.edit', compact('categories', 'suppliers', 'product', 'authors', 'brands'));
     }
 
@@ -107,8 +123,8 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
-        $product = Product::find($id);
+
+        $product = $this->productRepository->find($id);
         $delete_images_src = [];
         if($request->has('thumbnail_src')) {
             foreach($product->image as $product_thumbnail_src) {
@@ -149,7 +165,7 @@ class ProductController extends Controller
         $product->public_date = $request->public_date;
         $product->size = $request->size;
         $product->cover = $request->cover;
-        $product->page = $request->page; 
+        $product->page = $request->page;
         $product->save();
         return redirect()->route('product.list')->with("success","Sửa thành công");
     }
@@ -162,22 +178,19 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        $product = Product::find($id);
-        $product->delete();
+        $this->productRepository->destroy(id);
         return redirect()->route('product.list')->with("success","Xóa thành công");
     }
 
     public function updateStatus($id, $status)
     {
-        $product = Product::find($id);
-        $product->status = $status;
-        $product->save();
+        $this->productRepository->update($id,$status);
         return redirect()->route('product.list')->with("success","Cập nhật trạng thái thành công");
     }
 
     public function show($id)
     {
-        $product = Product::find($id); 
+        $product = $this->productRepository->findProduct($id);
         return view('admin.products.show', compact('product'));
     }
 }

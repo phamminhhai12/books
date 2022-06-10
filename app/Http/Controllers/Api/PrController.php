@@ -51,11 +51,21 @@ class PrController extends Controller
      */
     public function store(Request $request)
     {
-        $data = [
-            'name'=> $request->input('name'),
-            'price'=>$request->input('price')
-        ];
-       return $request;
+            $data = [
+                'name' => $request->input(['name']),
+                'price' => $request->input('price'),
+                'category_id' => $request->input(['category_id']),
+                'supplier_id' => $request->input(['supplier_id']),
+                'author_id' => $request->author_id,
+                'brand_id' => $request->brand_id,
+                'description' => $request->input('description'),
+                'qty' => $request->input('qty'),
+                'public_date' => $request->public_date,
+                'size' => $request->size,
+                'cover' => $request->cover,
+                'page' => $request->page
+            ];
+            return $this->productRepository->create($data);
 
     }
     /**
@@ -85,7 +95,7 @@ class PrController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function edit($id)
     {
         return $this->productRepository->findProduct($id);
     }
@@ -99,17 +109,21 @@ class PrController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
-        //
+        $this->productRepository->destroy($id);
+        return response()->json([
+            'status' => '200',
+            'message' =>'OK'
+        ]);
     }
 }

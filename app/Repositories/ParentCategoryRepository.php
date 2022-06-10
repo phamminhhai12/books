@@ -15,12 +15,14 @@ class ParentCategoryRepository implements  ParentCategoryRepositoryInterface
         return ParentCategory::all();
     }
 
-    public function create(Request $request)
+    public function create($request = [])
     {
-        // TODO: Implement create() method.
+        return ParentCategory::create([
+            'name' => $request['name'],
+        ]);
     }
 
-    public function update(Request $request, $id)
+    public function update($request = [], $id)
     {
         // TODO: Implement update() method.
     }

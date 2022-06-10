@@ -19,12 +19,25 @@ class ProductRepository implements ProductRepositoryInterface
             ->get(['products.*', 'categories.name AS cate_title', 'suppliers.name AS supplier_title', 'authors.name AS author_title', 'brands.name AS brand_title']);
     }
 
-    public function create(Request $request)
+    public function create($request = [])
     {
-        // TODO: Implement create() method.
+        Product::create([
+            'name' => $request->input(['name']),
+            'price' => $request->input('price'),
+            'category_id' => $request->input(['category_id']),
+            'supplier_id' => $request->input(['supplier_id']),
+            'author_id' => $request->author_id,
+            'brand_id' => $request->brand_id,
+            'description' => $request->input('description'),
+            'qty' => $request->input('qty'),
+            'public_date' => $request->public_date,
+            'size' => $request->size,
+            'cover' => $request->cover,
+            'page' => $request->page
+        ]);
     }
 
-    public function update(Request $request, $id)
+    public function update($request = [], $id)
     {
         // TODO: Implement update() method.
     }

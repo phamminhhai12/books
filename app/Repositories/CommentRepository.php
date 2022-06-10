@@ -15,12 +15,12 @@ class CommentRepository implements CommentRepositoryInterface
         return Comment::all();
     }
 
-    public function create(Request $request)
+    public function create($request = [])
     {
         // TODO: Implement create() method.
     }
 
-    public function update(Request $request, $id)
+    public function update($request = [], $id)
     {
         // TODO: Implement update() method.
     }

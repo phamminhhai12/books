@@ -16,7 +16,7 @@ class AuthorRepository implements AuthorRepositoryInterface
     }
 
 
-    public function create(Request $request)
+    public function create($request = [])
     {
 
         try{
@@ -31,7 +31,7 @@ class AuthorRepository implements AuthorRepositoryInterface
         return true;
     }
 
-    public function update(Request $request, $id)
+    public function update($request = [], $id)
     {
         $author = Author::find($id);
         $author->name = $request->name;

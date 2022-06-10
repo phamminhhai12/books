@@ -24,7 +24,7 @@ class CategoryRepository implements CategoryRepositoryInterface
                             ->get();
     }
 
-    public function create(Request $request)
+    public function create($request = [])
     {
          Category::create([
             'name' => $request->name,
@@ -33,7 +33,7 @@ class CategoryRepository implements CategoryRepositoryInterface
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update($request = [], $id)
     {
         $category = Category::find($id);
         $category->name = $request->name;

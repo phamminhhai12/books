@@ -14,12 +14,12 @@ class SupplierRepository implements SupplierRepositoryInterface
         // TODO: Implement getAll() method.
     }
 
-    public function create(Request $request)
+    public function create($request = [])
     {
         // TODO: Implement create() method.
     }
 
-    public function update(Request $request, $id)
+    public function update($request = [], $id)
     {
         // TODO: Implement update() method.
     }

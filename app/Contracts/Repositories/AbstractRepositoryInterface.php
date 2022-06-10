@@ -8,9 +8,9 @@ interface AbstractRepositoryInterface
 {
     public function getAll();
 
-    public function create( Request $request);
+    public function create( $request = []);
 
-    public function  update(Request $request, $id);
+    public function  update($request = [], $id);
 
     public function destroy($id);
 

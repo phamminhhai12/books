@@ -15,7 +15,7 @@ class BrandRepository implements BrandRepositoryInterface
        return Brand::all();
     }
 
-    public function create(Request $request)
+    public function create($request = [])
     {
         try{
             Brand::create([
@@ -29,7 +29,7 @@ class BrandRepository implements BrandRepositoryInterface
         return true;
     }
 
-    public function update(Request $request, $id)
+    public function update($request = [], $id)
     {
         $brand = Brand::find($id);
         $brand->name = $request->name;

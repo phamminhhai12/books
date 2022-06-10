@@ -65,38 +65,18 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($request = [])
     {
-        if ($request->has('thumbnail')) {
-            $validated = $request->validate([
-                'name' => 'required',
-                'category_id' => 'required',
-                'supplier_id' => 'required'
-            ]);
-            $product = Product::create([
-                'name' => $validated['name'],
-                'price' => $request->input('price'),
-                'category_id' => $validated['category_id'],
-                'supplier_id' => $validated['supplier_id'],
-                'author_id' => $request->author_id,
-                'brand_id' => $request->brand_id,
-                'description' => $request->input('description'),
-                'qty' => $request->input('qty'),
-                'public_date' => $request->public_date,
-                'size' => $request->size,
-                'cover' => $request->cover,
-                'page' => $request->page
-            ]);
+
+            $product = $this->productRepository->create($request);
             foreach($request->thumbnail as $image) {
                 $name = $image->getClientOriginalName();
                 $image->storeAs('/public/images/products', $name);
                 $product->image()->create(["url" => "storage/images/products/". $name]);
             }
-            return redirect()->route('product.list')->with("success","Lưu thành công");
-        } else {
-            return redirect()->back()->with("invalid","Vui lòng thêm ảnh");
-        }
+            return $product;
     }
+
 
     /**
      * Show the form for editing the specified resource.
